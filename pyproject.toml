@@ -4,4 +4,8 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "argparse>=1.4.0",
+    "console>=0.9912",
+    "rich>=15.0.0",
+]
