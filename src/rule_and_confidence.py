@@ -2,7 +2,7 @@ from typing import Literal
 """
 Create list of Prefix-Rules
  # format
-    |prefix|name|reason|
+    |prefix|name|discribe|
 """
 Confidence = Literal["High", "Medium", "Low"]
 

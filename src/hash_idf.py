@@ -26,13 +26,15 @@ Confidence = rule_and_confidence.Confidence
 class HashCanndidate:
     # Crate Class for Algorithm, Confidence, Reason
     algorithm : str
-    confidence : Confidence
+    confidence : Confidence # Only have three options "High", "Medium", "Low"
     reason : str
+    describe: str
 
     def print_canndidat(self):
         print(f"Algorithm: {self.algorithm}")
         print(f"Confidence: {self.confidence}")
         print(f"reason: {self.reason}")
+        print(f"describe: {self.describe}")
 
 
 
@@ -45,8 +47,9 @@ def indentify(hash) -> HashCanndidate:
             
             return HashCanndidate(
                 algorithm=f"{rule[1]}",
-                confidence="High",
-                reason=f"Reason Start with: {rule[0]}"
+                confidence= "High",
+                reason=f"Reason Start with: {rule[0]}",
+                describe=f"{rule[2]}"
             )
     
         
