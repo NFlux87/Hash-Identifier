@@ -244,3 +244,98 @@ PREFIX_RULES: list[tuple[str, str, str]] = [
     ("$crc32$", "CRC-32", "Tagged CRC-32 checksum"),
 ]
 
+
+# Length Only
+# for raw Hash in Hexdecimal
+RAW_HEX_RULES: dict[int, tuple[tuple[str, str], ...]] = {
+    8: (("CRC-32", "32-bit hexadecimal checksum"),),
+    16: (("MySQL 3.23", "Legacy MySQL 64-bit password hash"),),
+    32: (
+        ("MD4", "128-bit hexadecimal digest"),
+        ("MD5", "128-bit hexadecimal digest"),
+        ("NTLM", "128-bit hexadecimal digest"),
+    ),
+    40: (
+        ("SHA-1", "160-bit hexadecimal digest"),
+        ("RIPEMD-160", "160-bit hexadecimal digest"),
+    ),
+    56: (
+        ("SHA-224", "224-bit hexadecimal digest"),
+        ("SHA3-224", "224-bit hexadecimal digest"),
+    ),
+    64: (
+        ("SHA-256", "256-bit hexadecimal digest"),
+        ("SHA3-256", "256-bit hexadecimal digest"),
+        ("BLAKE2s-256", "256-bit hexadecimal digest"),
+    ),
+    96: (
+        ("SHA-384", "384-bit hexadecimal digest"),
+        ("SHA3-384", "384-bit hexadecimal digest"),
+    ),
+    128: (
+        ("SHA-512", "512-bit hexadecimal digest"),
+        ("SHA3-512", "512-bit hexadecimal digest"),
+        ("BLAKE2b-512", "512-bit hexadecimal digest"),
+        ("Whirlpool", "512-bit hexadecimal digest"),
+    ),
+}
+
+
+# Full-format validators. A matching prefix gives Low confidence; a complete
+# match here upgrades the candidate to High confidence.
+# Format: (algorithm, regular expression)
+FULL_FORMAT_RULES: list[tuple[str, str]] = [
+    # bcrypt: revision, cost 04-31, then exactly 53 bcrypt-base64 characters.
+    ("bcrypt", r"\$2[abxy]\$(?:0[4-9]|[12][0-9]|3[01])\$[./A-Za-z0-9]{53}"),
+
+    # Common PHC formats.
+    (
+        "Argon2id",
+        r"\$argon2id\$v=\d+\$m=\d+,t=\d+,p=\d+\$[A-Za-z0-9+/]+={0,2}\$[A-Za-z0-9+/]+={0,2}",
+    ),
+    (
+        "Argon2i",
+        r"\$argon2i\$v=\d+\$m=\d+,t=\d+,p=\d+\$[A-Za-z0-9+/]+={0,2}\$[A-Za-z0-9+/]+={0,2}",
+    ),
+    (
+        "Argon2d",
+        r"\$argon2d\$v=\d+\$m=\d+,t=\d+,p=\d+\$[A-Za-z0-9+/]+={0,2}\$[A-Za-z0-9+/]+={0,2}",
+    ),
+
+    # Unix modular crypt formats.
+    ("MD5-crypt", r"\$1\$[./A-Za-z0-9]{1,8}\$[./A-Za-z0-9]{22}"),
+    (
+        "SHA256-crypt",
+        r"\$5\$(?:rounds=\d+\$)?[./A-Za-z0-9]{1,16}\$[./A-Za-z0-9]{43}",
+    ),
+    (
+        "SHA512-crypt",
+        r"\$6\$(?:rounds=\d+\$)?[./A-Za-z0-9]{1,16}\$[./A-Za-z0-9]{86}",
+    ),
+
+    # Database and framework formats.
+    ("MySQL 4.1+ SHA-1", r"\*[0-9A-Fa-f]{40}"),
+    ("Django unsalted MD5", r"unsalted_md5\$[0-9A-Fa-f]{32}"),
+    ("Django unsalted SHA-1", r"unsalted_sha1\$[0-9A-Fa-f]{40}"),
+    ("Django salted MD5", r"md5\$[^$]+\$[0-9A-Fa-f]{32}"),
+    ("Django salted SHA-1", r"sha1\$[^$]+\$[0-9A-Fa-f]{40}"),
+    (
+        "Django PBKDF2-SHA256",
+        r"pbkdf2_sha256\$\d+\$[^$]+\$[A-Za-z0-9+/]+={0,2}",
+    ),
+    (
+        "Django PBKDF2-SHA1",
+        r"pbkdf2_sha1\$\d+\$[^$]+\$[A-Za-z0-9+/]+={0,2}",
+    ),
+
+    # Tagged raw hexadecimal digests.
+    ("MD4", r"\$md4\$[0-9A-Fa-f]{32}"),
+    ("MD5", r"\$md5\$[0-9A-Fa-f]{32}"),
+    ("SHA-1", r"\$sha1\$[0-9A-Fa-f]{40}"),
+    ("SHA-224", r"\$sha224\$[0-9A-Fa-f]{56}"),
+    ("SHA-256", r"\$sha256\$[0-9A-Fa-f]{64}"),
+    ("SHA-384", r"\$sha384\$[0-9A-Fa-f]{96}"),
+    ("SHA-512", r"\$sha512\$[0-9A-Fa-f]{128}"),
+    ("Whirlpool", r"\$whirlpool\$[0-9A-Fa-f]{128}"),
+    ("CRC-32", r"\$crc32\$[0-9A-Fa-f]{8}"),
+]
