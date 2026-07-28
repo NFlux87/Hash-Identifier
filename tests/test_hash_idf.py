@@ -1,6 +1,6 @@
 import unittest
 
-from src.hash_idf import HashCanndidate, confirm, identify
+from src.hash_idf import HashCandidate, confirm, identify
 
 
 class IdentifyInputTest(unittest.TestCase):
@@ -114,7 +114,7 @@ class PrefixAndConfidenceTest(unittest.TestCase):
 
 class ConfirmTest(unittest.TestCase):
     def test_confirm_does_not_mutate_original_candidate(self):
-        candidate = HashCanndidate(
+        candidate = HashCandidate(
             algorithm="bcrypt",
             confidence="Low",
             reason="prefix match",

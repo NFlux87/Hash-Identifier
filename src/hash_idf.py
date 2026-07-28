@@ -26,7 +26,7 @@ Confidence = rule_and_confidence.Confidence
 
 
 @dataclass(frozen=True, slots=True)
-class HashCanndidate:
+class HashCandidate:
     # Candidate contains Algorithm, Confidence, Reason and Description.
     algorithm: str
     confidence: Confidence  # Only have three options: High, Medium, Low
@@ -34,17 +34,17 @@ class HashCanndidate:
     describe: str
     prefix: str = ""
 
-    def print_canndidat(self):
+    def print_candidate(self):
         print(f"Algorithm: {self.algorithm}")
         print(f"Confidence: {self.confidence}")
         print(f"reason: {self.reason}")
         print(f"describe: {self.describe}")
 
 
-def confirm(value: str, hash_list: list[HashCanndidate]) -> list[HashCanndidate]:
+def confirm(value: str, hash_list: list[HashCandidate]) -> list[HashCandidate]:
     """Upgrade a prefix candidate to High when its complete format is valid."""
 
-    confirmed_list: list[HashCanndidate] = []
+    confirmed_list: list[HashCandidate] = []
 
     for candidate in hash_list:
         matched_pattern = ""
@@ -69,7 +69,7 @@ def confirm(value: str, hash_list: list[HashCanndidate]) -> list[HashCanndidate]
     return confirmed_list
 
 
-def identify(value: str) -> list[HashCanndidate]:
+def identify(value: str) -> list[HashCandidate]:
     """Return every hash algorithm whose prefix or raw shape matches value."""
 
     if not isinstance(value, str):
@@ -79,12 +79,12 @@ def identify(value: str) -> list[HashCanndidate]:
     if not value:
         return []
 
-    canidate_list: list[HashCanndidate] = []
+    candidate_list: list[HashCandidate] = []
 
     # Check PREFIX_RULES
     for prefix, algorithm, description in PREFIX_RULES:
         if value.startswith(prefix):
-            canidate_list.append(HashCanndidate(
+            candidate_list.append(HashCandidate(
                 algorithm=algorithm,
                 confidence="Low",
                 reason=f"Starts with the known prefix {prefix!r}",
@@ -93,13 +93,13 @@ def identify(value: str) -> list[HashCanndidate]:
             ))
 
     # Check full format for prefix candidates. A prefix alone remains Low.
-    canidate_list = confirm(value, canidate_list)
+    candidate_list = confirm(value, candidate_list)
 
     # Check Length and format for a raw hexadecimal hash. Raw hashes remain
     # Medium because many algorithms have the same output length and shape.
     if re.fullmatch(r"[0-9a-fA-F]+", value):
         for algorithm, description in RAW_HEX_RULES.get(len(value), ()):
-            canidate_list.append(HashCanndidate(
+            candidate_list.append(HashCandidate(
                 algorithm=algorithm,
                 confidence="Medium",
                 reason=(
@@ -111,12 +111,12 @@ def identify(value: str) -> list[HashCanndidate]:
 
     # Show the strongest matches first while preserving rule order.
     confidence_order = {"High": 0, "Medium": 1, "Low": 2}
-    canidate_list.sort(key=lambda candidate: confidence_order[candidate.confidence])
+    candidate_list.sort(key=lambda candidate: confidence_order[candidate.confidence])
 
-    return canidate_list
+    return candidate_list
 
 
-def print_results(results: list[HashCanndidate]):
+def print_results(results: list[HashCandidate]):
     console = Console()
 
     if not results:
